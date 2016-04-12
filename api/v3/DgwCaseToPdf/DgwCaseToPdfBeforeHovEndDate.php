@@ -51,8 +51,8 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     return civicrm_api3_create_error($return);
     
   }
-  $return['message'][] = ts('Directory created, with $pathname \'%s\'.' . $pathname);
-  echo ts('Directory created, with $pathname \'%s\'.' . $pathname) . '<br/>' . PHP_EOL;
+  $return['message'][] = ts('Directory created, with pathname \'%s\'.' . $pathname);
+  echo ts('Directory created, with pathname \'%s\'.' . $pathname) . '<br/>' . PHP_EOL;
     
   $query = "SELECT * FROM civicrm_case
     LEFT JOIN civicrm_case_contact ON civicrm_case_contact.case_id = civicrm_case.id
@@ -86,6 +86,12 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       }
 
       return civicrm_api3_create_success($return);
+    }
+    
+    $return['message'][] = ts('Start witth case \'%1\' with contact id \'%2\'.', array(1 => $dao->case_id, 2 => $dao->contact_id));
+    if($debug){
+      echo ts('Start witth case \'%1\' with contact id \'%2\'.', array(1 => $dao->case_id, 2 => $dao->contact_id)) . '<br/>' . PHP_EOL;
+      CRM_Casetopdf_Config::flush();
     }
     
     $household_id = $configDgwCaseToPdf->getHousehold($dao->contact_id);
@@ -151,11 +157,6 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     }
         
     $filename = $pathname . '(' . $dao->case_id . '_' . $dao->contact_id . ')' . implode('_', $pathvar) . '.pdf';
-    
-    if($debug){
-      echo ts('Start with $filename \'%1\'', array(1 => $filename)) . '<br/>' . PHP_EOL;
-      CRM_Casetopdf_Config::flush();
-    }
         
     if(CRM_Casetopdf_Config::file_exists($filename)){
       continue;
@@ -171,14 +172,14 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     }
     
     if($debug){
-      echo ts('Html string lenght is \'%1\', from $filename \'%2\'', array(1 => strlen($html), 2 => $filename)) . '<br/>' . PHP_EOL;
+      echo ts('Html string lenght is \'%1\', of file filename \'%2\'', array(1 => strlen($html), 2 => $filename)) . '<br/>' . PHP_EOL;
       CRM_Casetopdf_Config::flush();
     }
     
     if(364286 <= strlen($html)){
-      $return['message'][] = ts('Html is to big  to convert to pdf, with $filename \'%1\'', array(1 => $filename));
+      $return['message'][] = ts('Html is to big  to convert to pdf, filename \'%1\'', array(1 => $filename));
       if($debug){
-        echo ts('Html is to big  to convert to pdf, with $filename \'%1\'', array(1 => $filename)) . '<br/>' . PHP_EOL;
+        echo ts('Html is to big  to convert to pdf, filename \'%1\'', array(1 => $filename)) . '<br/>' . PHP_EOL;
       }
       continue;
     }   
@@ -193,8 +194,8 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       }
 
     }else {
-      $return['message'][] = ts('Pdf file created, with $filename \'%1\'.', array(1 => $filename));
-      echo ts('Pdf file created, with $filename \'%1\'.', array(1 => $filename)) . '<br/>' . PHP_EOL;
+      $return['message'][] = ts('Pdf file created, with filename \'%1\'.', array(1 => $filename));
+      echo ts('Pdf file created, with filename \'%1\'.', array(1 => $filename)) . '<br/>' . PHP_EOL;
     }
         
     if($debug){
