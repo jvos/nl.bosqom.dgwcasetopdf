@@ -85,7 +85,7 @@ class CRM_Dgwcasetopdf_Config {
   }
   
   public function getHovHousehold($household_id){
-    try {    
+    //try {    
       $query = "SELECT hov.entity_id,
         hov." . $this->hovHouseholdCustomFields['HOV_nummer_First']['column_name'] . " as `HOV_nummer_First`,
         hov." . $this->hovHouseholdCustomFields['VGE_nummer_First']['column_name'] . " as `VGE_nummer_First`,
@@ -115,14 +115,14 @@ class CRM_Dgwcasetopdf_Config {
 
       return (array) $dao;
       
-    } catch (CiviCRM_API3_Exception $ex) {
+    /*} catch (CiviCRM_API3_Exception $ex) {
       throw new Exception('Could not find hov household with household id '.$household_id
         .' in getHovHousehold, error from CRM_Core_DAO executeQuery error :'.$ex->getMessage() . ', $query: ' . $query . ' $params: ' . $params);
-    }
+    }*/
   }
   
   public function getPerNummerFirst($contact_id){
-    try { 
+    //try { 
       $query = "SELECT per.entity_id,
         per." . $this->perGegevensCustomFields['Persoonsnummer_First']['column_name'] . " as `Persoonsnummer_First`,
         per." . $this->perGegevensCustomFields['BSN']['column_name'] . " as `BSN`,
@@ -147,10 +147,10 @@ class CRM_Dgwcasetopdf_Config {
       $dao->fetch();
 
       return (array) $dao;
-    } catch (CiviCRM_API3_Exception $ex) {
+    /*} catch (CiviCRM_API3_Exception $ex) {
       throw new Exception('Could not find per with contact id '.$contact_id
         .' in getPerNummerFirst, error from CRM_Core_DAO executeQuery error :'.$ex->getMessage() . ', $query: ' . $query . ' $params: ' . $params);
-    }
+    }*/
   }
   
   private function setHoofdhuurderRelationshipTypeId(){

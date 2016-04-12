@@ -31,6 +31,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
   if($debug){
     $return['message'][] = ts('Debug is on !');
     echo ts('Debug is on !') . '<br/>' . PHP_EOL;
+    CRM_Casetopdf_Config::flush();
   }
   
   $configCaseToPdf = CRM_Casetopdf_Config::singleton();
@@ -43,6 +44,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
   if($_return['is_error']){
     $return['is_error'] = $_return['is_error'];
     $return['error_message'] = $_return['error_message'];
+    $return['message'][] = $return['error_message'];
     if($debug){
       echo $return['error_message'] . '<br/>' . PHP_EOL;
     }
@@ -50,6 +52,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     
   }
   $return['message'][] = ts('Directory created, with $pathname \'%s\'.' . $pathname);
+  echo ts('Directory created, with $pathname \'%s\'.' . $pathname) . '<br/>' . PHP_EOL;
     
   $query = "SELECT * FROM civicrm_case
     LEFT JOIN civicrm_case_contact ON civicrm_case_contact.case_id = civicrm_case.id
@@ -60,12 +63,21 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
   if(!$dao = CRM_Core_DAO::executeQuery($query)){
     $return['is_error'] = true;
     $return['error_message'] = sprintf('Failed execute query (%s) !', $query);
+    $return['message'][] = $return['error_message'];
     if($debug){
       echo $return['error_message'] . '<br/>' . PHP_EOL;
     }
     return civicrm_api3_create_error($return);
+    
+  }else {
+    $return['message'][] = ts('All cases retrieved !');
+    echo ts('All cases retrieved !') . '<br/>' . PHP_EOL;
   }
     
+  if($debug){
+    CRM_Casetopdf_Config::flush();
+  }
+  
   $count = 0;
   while ($dao->fetch()) { 
     if('0' != $limit and $limit == $count){
@@ -105,6 +117,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       echo ts('Skip case, hov end date is before \'2016-01-01\' ! With case id \'%1\' and contact id \'%2\' and hov end date \'%3\'.', array(1 => $dao->case_id, 2 => $dao->contact_id, $hov['Einddatum_HOV'])) . '<br/>' . PHP_EOL;
     }
     
+    $per = [];
     if($hoofdhuurder_id){
       $per = $configDgwCaseToPdf->getPerNummerFirst($hoofdhuurder_id);
       if(isset($per['is_error']) and $per['is_error']){
@@ -123,6 +136,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     }
     
     $pathvar[] = $dao->case_id;
+    
     if(isset($hov['VGE_adres_First']) and !empty($hov['VGE_adres_First'])){
       $VGE_adres_First = str_replace(' ', '-', $hov['VGE_adres_First']);
       $pathvar[] = preg_replace('/[^A-Za-z0-9\-]/', '', $VGE_adres_First); 
@@ -138,6 +152,11 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
         
     $filename = $pathname . '(' . $dao->case_id . '_' . $dao->contact_id . ')' . implode('_', $pathvar) . '.pdf';
     
+    if($debug){
+      echo ts('Start with $filename \'%1\'', array(1 => $filename)) . '<br/>' . PHP_EOL;
+      CRM_Casetopdf_Config::flush();
+    }
+        
     if(CRM_Casetopdf_Config::file_exists($filename)){
       continue;
     }
@@ -150,6 +169,19 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
         echo $html['error_message'] . '<br/>' . PHP_EOL;
       }
     }
+    
+    if($debug){
+      echo ts('Html string lenght is \'%1\', from $filename \'%2\'', array(1 => strlen($html), 2 => $filename)) . '<br/>' . PHP_EOL;
+      CRM_Casetopdf_Config::flush();
+    }
+    
+    if(364286 <= strlen($html)){
+      $return['message'][] = ts('Html is to big  to convert to pdf, with $filename \'%1\'', array(1 => $filename));
+      if($debug){
+        echo ts('Html is to big  to convert to pdf, with $filename \'%1\'', array(1 => $filename)) . '<br/>' . PHP_EOL;
+      }
+      continue;
+    }   
     
     $output = CRM_Utils_PDF_Utils::html2pdf($html, $filename, true);
     $_return = CRM_Casetopdf_Config::fwrite($filename, $output, 'w');
@@ -164,6 +196,10 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       $return['message'][] = ts('Pdf file created, with $filename \'%1\'.', array(1 => $filename));
       echo ts('Pdf file created, with $filename \'%1\'.', array(1 => $filename)) . '<br/>' . PHP_EOL;
     }
+        
+    if($debug){
+      CRM_Casetopdf_Config::flush();
+    }
     
     $count++;
   }
@@ -173,6 +209,4 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
   }
   
   return civicrm_api3_create_success($return);
-  
 }
-
