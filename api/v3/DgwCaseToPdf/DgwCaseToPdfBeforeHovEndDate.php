@@ -68,7 +68,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     
   $count = 0;
   while ($dao->fetch()) { 
-    if('0' != $limit and $limit == $count){
+    if($limit == $count){
       if($debug){
         CRM_Utils_System::civiExit();
       }
@@ -105,11 +105,13 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       echo ts('Skip case, hov end date is before \'2016-01-01\' ! With case id \'%1\' and contact id \'%2\' and hov end date \'%3\'.', array(1 => $dao->case_id, 2 => $dao->contact_id, $hov['Einddatum_HOV'])) . '<br/>' . PHP_EOL;
     }
     
-    $per = $configDgwCaseToPdf->getPerNummerFirst($hoofdhuurder_id);
-    if(isset($per['is_error']) and $per['is_error']){
-      $return['message'][] = $per['error_message'];
-      if($debug){
-        echo $per['error_message'] . '<br/>' . PHP_EOL;
+    if($hoofdhuurder_id){
+      $per = $configDgwCaseToPdf->getPerNummerFirst($hoofdhuurder_id);
+      if(isset($per['is_error']) and $per['is_error']){
+        $return['message'][] = $per['error_message'];
+        if($debug){
+          echo $per['error_message'] . '<br/>' . PHP_EOL;
+        }
       }
     }
     
@@ -145,7 +147,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
         
     $filename = $pathname . '(' . $dao->case_id . '_' . $dao->contact_id . ')' . implode('_', $pathvar) . '.pdf';
     
-    if('0' != $limit and CRM_Casetopdf_Config::file_exists($filename)){
+    if(CRM_Casetopdf_Config::file_exists($filename)){
       continue;
     }
     
