@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<extension key="nl.bosqom.dgwcasetopdf" type="module">
+  <file>dgwcasetopdf</file>
+  <name>De Goede Woning - Case to pdf.</name>
+  <description>This extension allows you to create a PDF file of the standard timeline of a case.</description>
+  <license>AGPL-3.0</license>
+  <maintainer>
+    <author>Jan-Derek</author>
+    <email>j.vos@bosqom.nl</email>
+  </maintainer>
+  <urls>
+    <url desc="Main Extension Page">http://FIXME</url>
+    <url desc="Documentation">http://FIXME</url>
+    <url desc="Support">http://FIXME</url>
+    <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
+  </urls>
+  <releaseDate>2016-04-11</releaseDate>
+  <version>1.0</version>
+  <develStage>alpha</develStage>
+  <compatibility>
+    <ver>4.2</ver>
+  </compatibility>
+  <comments>This is a new, undeveloped module</comments>
+  <civix>
+    <namespace>CRM/Dgwcasetopdf</namespace>
+  </civix>
+</extension>
