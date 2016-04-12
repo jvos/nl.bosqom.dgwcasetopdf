@@ -114,16 +114,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
         }
       }
     }
-    
-    $htmlcasereport  = new CRM_Casetopdf_Case_XMLProcessor_Report();
-    $html = $htmlcasereport->htmlCaseReport($dao->case_id, $dao->contact_id, $activitySetName, $isRedact, $includeActivities);
-    if(isset($html['is_error']) and $html['is_error']){
-      $return['message'][] = $html['error_message'];
-      if($debug){
-        echo $html['error_message'] . '<br/>' . PHP_EOL;
-      }
-    }
-    
+        
     $pathvar = [];
     if(isset($per['Persoonsnummer_First']) and !empty($per['Persoonsnummer_First'])){
       $pathvar[] = str_replace(' ', '-', $per['Persoonsnummer_First']);
@@ -149,6 +140,15 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     
     if(CRM_Casetopdf_Config::file_exists($filename)){
       continue;
+    }
+    
+    $htmlcasereport  = new CRM_Casetopdf_Case_XMLProcessor_Report();
+    $html = $htmlcasereport->htmlCaseReport($dao->case_id, $dao->contact_id);
+    if(isset($html['is_error']) and $html['is_error']){
+      $return['message'][] = $html['error_message'];
+      if($debug){
+        echo $html['error_message'] . '<br/>' . PHP_EOL;
+      }
     }
     
     $output = CRM_Utils_PDF_Utils::html2pdf($html, $filename, true);
