@@ -142,9 +142,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     }else {
       $pathvar[] = ts('no-hov-nr-first');
     }
-    
-    $pathvar[] = $dao->contact_id;
-    
+        
     $filename = $pathname . '(' . $dao->case_id . '_' . $dao->contact_id . ')' . implode('_', $pathvar) . '.pdf';
     
     if('0' != $limit and CRM_Casetopdf_Config::file_exists($filename)){
