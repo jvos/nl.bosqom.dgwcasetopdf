@@ -85,61 +85,72 @@ class CRM_Dgwcasetopdf_Config {
   }
   
   public function getHovHousehold($household_id){
-    $query = "SELECT hov.entity_id,
-      hov." . $this->hovHouseholdCustomFields['HOV_nummer_First']['column_name'] . " as `HOV_nummer_First`,
-      hov." . $this->hovHouseholdCustomFields['VGE_nummer_First']['column_name'] . " as `VGE_nummer_First`,
-      hov." . $this->hovHouseholdCustomFields['VGE_adres_First']['column_name'] . " as `VGE_adres_First`,
-      hov." . $this->hovHouseholdCustomFields['Correspondentienaam_First']['column_name'] . " as `Correspondentienaam_First`,
-      hov." . $this->hovHouseholdCustomFields['Begindatum_HOV']['column_name'] . " as `Begindatum_HOV`,
-      hov." . $this->hovHouseholdCustomFields['Einddatum_HOV']['column_name'] . " as `Einddatum_HOV`
-      FROM " . $this->hovHouseholdCustomTableName . " as hov
-      WHERE hov.entity_id = '%1'
-    ";
-    $params = array( 
-        1 => array($household_id, 'Integer'),
-    );
-    
-    $return = [];
-    
-    if(!$dao = CRM_Core_DAO::executeQuery($query, $params)){
-      $return['is_error'] = true;
-      $return['error_message'] = sprintf('Failed execute query (%s) !', $query);
-      if($debug){
-        echo $return['error_message'] . '<br/>' . PHP_EOL;
+    try {    
+      $query = "SELECT hov.entity_id,
+        hov." . $this->hovHouseholdCustomFields['HOV_nummer_First']['column_name'] . " as `HOV_nummer_First`,
+        hov." . $this->hovHouseholdCustomFields['VGE_nummer_First']['column_name'] . " as `VGE_nummer_First`,
+        hov." . $this->hovHouseholdCustomFields['VGE_adres_First']['column_name'] . " as `VGE_adres_First`,
+        hov." . $this->hovHouseholdCustomFields['Correspondentienaam_First']['column_name'] . " as `Correspondentienaam_First`,
+        hov." . $this->hovHouseholdCustomFields['Begindatum_HOV']['column_name'] . " as `Begindatum_HOV`,
+        hov." . $this->hovHouseholdCustomFields['Einddatum_HOV']['column_name'] . " as `Einddatum_HOV`
+        FROM " . $this->hovHouseholdCustomTableName . " as hov
+        WHERE hov.entity_id = '%1'
+      ";
+      $params = array( 
+          1 => array($household_id, 'Integer'),
+      );
+
+      $return = [];
+
+      if(!$dao = CRM_Core_DAO::executeQuery($query, $params)){
+        $return['is_error'] = true;
+        $return['error_message'] = sprintf('Failed execute query (%s) !', $query);
+        if($debug){
+          echo $return['error_message'] . '<br/>' . PHP_EOL;
+        }
+        return $return;
       }
-      return $return;
+
+      $dao->fetch();
+
+      return (array) $dao;
+      
+    } catch (CiviCRM_API3_Exception $ex) {
+      throw new Exception('Could not find hov household with household id '.$household_id
+        .' in getHovHousehold, error from CRM_Core_DAO executeQuery error :'.$ex->getMessage() . ', $query: ' . $query . ' $params: ' . $params);
     }
-    
-    $dao->fetch();
-    
-    return (array) $dao;
   }
   
   public function getPerNummerFirst($contact_id){
-    $query = "SELECT per.entity_id,
-      per." . $this->perGegevensCustomFields['Persoonsnummer_First']['column_name'] . " as `Persoonsnummer_First`,
-      per." . $this->perGegevensCustomFields['BSN']['column_name'] . " as `BSN`,
-      per." . $this->perGegevensCustomFields['Burgerlijke_staat']['column_name'] . " as `Burgerlijke_staat`,
-      per." . $this->perGegevensCustomFields['Totaal_debiteur']['column_name'] . " as `Totaal_debiteur`
-      FROM " . $this->perGegevensCustomTableName . " as per
-      WHERE per.entity_id = '%1'
-    ";
-    $params = array( 
-        1 => array($contact_id, 'Integer'),
-    );
-    
-    if(!$dao = CRM_Core_DAO::executeQuery($query, $params)){
-      $return['is_error'] = true;
-      $return['error_message'] = sprintf('Failed execute query (%s) !', $query);
-      if($debug){
-        echo $return['error_message'] . '<br/>' . PHP_EOL;
+    try { 
+      $query = "SELECT per.entity_id,
+        per." . $this->perGegevensCustomFields['Persoonsnummer_First']['column_name'] . " as `Persoonsnummer_First`,
+        per." . $this->perGegevensCustomFields['BSN']['column_name'] . " as `BSN`,
+        per." . $this->perGegevensCustomFields['Burgerlijke_staat']['column_name'] . " as `Burgerlijke_staat`,
+        per." . $this->perGegevensCustomFields['Totaal_debiteur']['column_name'] . " as `Totaal_debiteur`
+        FROM " . $this->perGegevensCustomTableName . " as per
+        WHERE per.entity_id = '%1'
+      ";
+      $params = array( 
+          1 => array($contact_id, 'Integer'),
+      );
+
+      if(!$dao = CRM_Core_DAO::executeQuery($query, $params)){
+        $return['is_error'] = true;
+        $return['error_message'] = sprintf('Failed execute query (%s) !', $query);
+        if($debug){
+          echo $return['error_message'] . '<br/>' . PHP_EOL;
+        }
+        return $return;
       }
-      return $return;
+
+      $dao->fetch();
+
+      return (array) $dao;
+    } catch (CiviCRM_API3_Exception $ex) {
+      throw new Exception('Could not find per with contact id '.$contact_id
+        .' in getPerNummerFirst, error from CRM_Core_DAO executeQuery error :'.$ex->getMessage() . ', $query: ' . $query . ' $params: ' . $params);
     }
-    
-    $dao->fetch();
-    
-    return (array) $dao;
   }
   
   private function setHoofdhuurderRelationshipTypeId(){
