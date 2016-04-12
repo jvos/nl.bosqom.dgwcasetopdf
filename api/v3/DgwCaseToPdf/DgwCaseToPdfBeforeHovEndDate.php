@@ -68,7 +68,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     
   $count = 0;
   while ($dao->fetch()) { 
-    if($limit == $count){
+    if('0' != $limit and $limit == $count){
       if($debug){
         CRM_Utils_System::civiExit();
       }
