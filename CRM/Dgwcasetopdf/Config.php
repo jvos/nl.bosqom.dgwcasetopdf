@@ -21,6 +21,9 @@ class CRM_Dgwcasetopdf_Config {
   private $medehuurderRelationshipTypeName = 'Medehuurder';
   public $medehuurderRelationshipTypeId = 0;
   
+  private $activityTypeGevoeligeDossierinformatieName = 'Let op! Gevoelige dossierinformatie';
+  public $activityTypeGevoeligeDossierinformatieId = 0;
+  
   /**
    * Constructor function
    */
@@ -30,6 +33,8 @@ class CRM_Dgwcasetopdf_Config {
     
     $this->setHoofdhuurderRelationshipTypeId();
     $this->setMedehuurderRelationshipTypeId();
+    
+    $this->setActivityTypeGevoeligeDossierinformatieId();
   }
   
   // Huurovereenkomst Household
@@ -280,6 +285,26 @@ class CRM_Dgwcasetopdf_Config {
     }
     
     return false;
+  }
+  
+  private function setActivityTypeGevoeligeDossierinformatieId(){
+    try {
+      $query = "SELECT * FROM `civicrm_option_value`
+        WHERE name = %1
+      ";
+      $params = array( 
+          1 => array($this->activityTypeGevoeligeDossierinformatieName, 'String'),
+      );
+
+      $dao = CRM_Core_DAO::executeQuery($query, $params);
+      $dao->fetch();
+
+      $this->activityTypeGevoeligeDossierinformatieId = $dao->value;
+      
+    } catch (CiviCRM_API3_Exception $ex) {
+      throw new Exception('Could not find activity type '. $this->activityTypeGevoeligeDossierinformatieName
+        .', error from civicrm_option_value :'.$ex->getMessage());
+    }
   }
   
   /**

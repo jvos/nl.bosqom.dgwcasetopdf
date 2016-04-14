@@ -162,7 +162,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       continue;
     }
     
-    $htmlcasereport  = new CRM_Casetopdf_Case_XMLProcessor_Report();
+    $htmlcasereport  = new CRM_Dgwcasetopdf_Case_XMLProcessor_Report();
     $html = $htmlcasereport->htmlCaseReport($dao->case_id, $dao->contact_id);
     if(isset($html['is_error']) and $html['is_error']){
       $return['message'][] = $html['error_message'];
