@@ -177,7 +177,8 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       CRM_Casetopdf_Config::flush();
     }
     
-    if(364286 <= strlen($html)){
+    //if(364286 <= strlen($html)){
+    if(93793 <= strlen($html)){
       $return['message'][] = ts('Html is to big  to convert to pdf, filename \'%1\'', array(1 => $filename));
       if($debug){
         echo ts('Html is to big  to convert to pdf, filename \'%1\'', array(1 => $filename)) . '<br/>' . PHP_EOL;
