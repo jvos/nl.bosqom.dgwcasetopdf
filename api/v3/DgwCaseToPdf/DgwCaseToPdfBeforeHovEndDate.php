@@ -163,6 +163,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     }
     
     $htmlcasereport  = new CRM_Dgwcasetopdf_Case_XMLProcessor_Report();
+    $html = '';
     $html = $htmlcasereport->htmlCaseReport($dao->case_id, $dao->contact_id);
     if(isset($html['is_error']) and $html['is_error']){
       $return['message'][] = $html['error_message'];
@@ -184,8 +185,13 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       continue;
     }   
     
+    $output = '';
+    $_return = '';
     $output = CRM_Utils_PDF_Utils::html2pdf($html, $filename, true);
+    
+    unset($html);    
     $_return = CRM_Casetopdf_Config::fwrite($filename, $output, 'w');
+    unset($output);    
     
     if($_return['is_error']){
       $return['message'][] = $_return['error_message'];
