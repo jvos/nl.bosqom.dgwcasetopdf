@@ -143,12 +143,12 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     $case_id = str_pad($case_id, 4, '0', STR_PAD_LEFT);
     $pathvar[] = $case_id;
     
-    // vge_nummer_first_6 always 5 long
-    if(isset($hov['vge_nummer_first_6']) and !empty($hov['vge_nummer_first_6'])){
-      $vge_nummer_first = '';
-      $vge_nummer_first = str_replace(' ', '-', $hov['vge_nummer_first_6']);
-      $vge_nummer_first = str_pad($vge_nummer_first, 5, '0', STR_PAD_LEFT);
-      $pathvar[] = str_replace(' ', '-', $vge_nummer_first);
+    // VGE_nummer_First always 5 long
+    if(isset($hov['VGE_nummer_First']) and !empty($hov['VGE_nummer_First'])){
+      $VGE_nummer_First = '';
+      $VGE_nummer_First = str_replace(' ', '-', $hov['VGE_nummer_First']);
+      $VGE_nummer_First = str_pad($VGE_nummer_First, 5, '0', STR_PAD_LEFT);
+      $pathvar[] = str_replace(' ', '-', $VGE_nummer_First);
     }else {
       //$pathvar[] = ts('no-vge-nr-first');
       $pathvar[] = '00000';
