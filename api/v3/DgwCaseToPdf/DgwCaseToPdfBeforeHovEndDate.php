@@ -117,11 +117,13 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       }
     }
     
+    /*
     // het hoeft alleen te gebeuren voor alle contacten die op 1-1-2016 een actieve overeenkomst hadden
     if(isset($hov['Einddatum_HOV']) and !is_null($hov['Einddatum_HOV']) and !empty($hov['Einddatum_HOV']) and '2016-01-01' < $hov['Einddatum_HOV']){
       $return['message'][] = ts('Skip case, hov end date is before \'2016-01-01\' ! With case id \'%1\' and contact id \'%2\' and hov end date \'%3\'.', array(1 => $dao->case_id, 2 => $dao->contact_id, $hov['Einddatum_HOV']));
       echo ts('Skip case, hov end date is before \'2016-01-01\' ! With case id \'%1\' and contact id \'%2\' and hov end date \'%3\'.', array(1 => $dao->case_id, 2 => $dao->contact_id, $hov['Einddatum_HOV'])) . '<br/>' . PHP_EOL;
     }
+    */
     
     $per = [];
     if($hoofdhuurder_id){
@@ -135,28 +137,52 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     }
         
     $pathvar = [];
-    if(isset($per['Persoonsnummer_First']) and !empty($per['Persoonsnummer_First'])){
-      $pathvar[] = str_replace(' ', '-', $per['Persoonsnummer_First']);
+    
+    // case_id always 4 numbers long
+    $case_id = $dao->case_id;
+    $case_id = str_pad($case_id, 4, '0', STR_PAD_LEFT);
+    $pathvar[] = $case_id;
+    
+    // vge_nummer_first_6 always 5 long
+    if(isset($hov['vge_nummer_first_6']) and !empty($hov['vge_nummer_first_6'])){
+      $vge_nummer_first = '';
+      $vge_nummer_first = str_replace(' ', '-', $hov['vge_nummer_first_6']);
+      $vge_nummer_first = str_pad($vge_nummer_first, 5, '0', STR_PAD_LEFT);
+      $pathvar[] = str_replace(' ', '-', $vge_nummer_first);
     }else {
-      $pathvar[] = ts('no-per-first');
+      //$pathvar[] = ts('no-vge-nr-first');
+      $pathvar[] = '00000';
     }
     
-    $pathvar[] = $dao->case_id;
+    // Pesoonsnummer_First always 5 long
+    if(isset($per['Persoonsnummer_First']) and !empty($per['Persoonsnummer_First'])){
+      $Persoonsnummer_First = '';
+      $Persoonsnummer_First = str_replace(' ', '-', $per['Persoonsnummer_First']);
+      $Persoonsnummer_First = str_pad($Persoonsnummer_First, 5, '0', STR_PAD_LEFT);
+      $pathvar[] = str_replace(' ', '-', $Persoonsnummer_First);
+    }else {
+      //$pathvar[] = ts('no-per-first');
+      $pathvar[] = '00000';
+    }
     
-    if(isset($hov['VGE_adres_First']) and !empty($hov['VGE_adres_First'])){
+    // VGE_adres_First 255 varchar
+    // vge_nummer_first 25 varchar
+    /*if(isset($hov['VGE_adres_First']) and !empty($hov['VGE_adres_First'])){
       $VGE_adres_First = str_replace(' ', '-', $hov['VGE_adres_First']);
       $pathvar[] = preg_replace('/[^A-Za-z0-9\-]/', '', $VGE_adres_First); 
     }else {
       $pathvar[] = ts('no-vge-adres');
-    }
+    }*/
     
-    if(isset($hov['HOV_nummer_First']) and !empty($hov['HOV_nummer_First'])){
+    // HOV_nummer_First 25 varchar
+    /*if(isset($hov['HOV_nummer_First']) and !empty($hov['HOV_nummer_First'])){
       $pathvar[] = str_replace(' ', '-', $hov['HOV_nummer_First']);
     }else {
       $pathvar[] = ts('no-hov-nr-first');
-    }
+    }*/
         
-    $filename = $pathname . '(' . $dao->case_id . '_' . $dao->contact_id . ')' . implode('_', $pathvar) . '.pdf';
+    //$filename = $pathname . '(' . $dao->case_id . '_' . $dao->contact_id . ')' . implode('_', $pathvar) . '.pdf';
+    $filename = $pathname . implode('_', $pathvar) . '.pdf';
         
     if(CRM_Casetopdf_Config::file_exists($filename)){
       continue;
@@ -177,8 +203,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       CRM_Casetopdf_Config::flush();
     }
     
-    //if(364286 <= strlen($html)){
-    if(93793 <= strlen($html)){
+    if(82710 <= strlen($html)){
       $return['message'][] = ts('Html is to big  to convert to pdf, filename \'%1\'', array(1 => $filename));
       if($debug){
         echo ts('Html is to big  to convert to pdf, filename \'%1\'', array(1 => $filename)) . '<br/>' . PHP_EOL;
