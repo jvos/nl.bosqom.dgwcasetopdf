@@ -65,7 +65,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     $dao_count->fetch();
     $return['message'][] = ts('\'%1\' cases retrieved.', array(1 => $dao_count->count));
     echo ts('\'%1\' cases retrieved.', array(1 => $dao_count->count)) . '<br/>' . PHP_EOL;
-
+  }
   
   $query = "SELECT * FROM civicrm_case
     LEFT JOIN civicrm_case_contact ON civicrm_case_contact.case_id = civicrm_case.id
