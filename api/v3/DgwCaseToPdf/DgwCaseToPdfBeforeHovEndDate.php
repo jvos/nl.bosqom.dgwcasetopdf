@@ -72,9 +72,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     LEFT JOIN civicrm_contact ON civicrm_contact.id = civicrm_case_contact.contact_id
     WHERE civicrm_case.is_deleted = '0' AND civicrm_contact.is_deleted = '0'
   ";
-  
-  $query_count = "SELECT COUNT(civicrm_case.id) as count"
-    
+      
   if(!$dao = CRM_Core_DAO::executeQuery($query)){
     $return['is_error'] = true;
     $return['error_message'] = sprintf('Failed execute query (%s) !', $query);
