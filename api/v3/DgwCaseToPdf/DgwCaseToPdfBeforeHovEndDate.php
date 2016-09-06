@@ -237,6 +237,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
   
   if($debug){
     CRM_Utils_System::civiExit();
+    exit();
   }
   
   return civicrm_api3_create_success($return);
