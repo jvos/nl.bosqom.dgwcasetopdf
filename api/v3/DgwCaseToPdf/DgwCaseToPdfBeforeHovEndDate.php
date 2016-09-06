@@ -1,5 +1,6 @@
 <?php
 set_time_limit(0);
+ini_set('memory_limit', '512M');
 
 /**
  * DgwCaseToPdf.DgwCaseToPdfBeforeHovEndDate API specification (optional)
@@ -140,29 +141,26 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     
     // case_id always 4 numbers long
     $case_id = $dao->case_id;
-    $case_id = str_pad($case_id, 4, '0', STR_PAD_LEFT);
     $pathvar[] = $case_id;
     
     // VGE_nummer_First always 5 long
     if(isset($hov['VGE_nummer_First']) and !empty($hov['VGE_nummer_First'])){
       $VGE_nummer_First = '';
       $VGE_nummer_First = str_replace(' ', '-', $hov['VGE_nummer_First']);
-      $VGE_nummer_First = str_pad($VGE_nummer_First, 5, '0', STR_PAD_LEFT);
       $pathvar[] = str_replace(' ', '-', $VGE_nummer_First);
     }else {
       //$pathvar[] = ts('no-vge-nr-first');
-      $pathvar[] = '00000';
+      $pathvar[] = 'none';
     }
     
     // Pesoonsnummer_First always 5 long
     if(isset($per['Persoonsnummer_First']) and !empty($per['Persoonsnummer_First'])){
       $Persoonsnummer_First = '';
       $Persoonsnummer_First = str_replace(' ', '-', $per['Persoonsnummer_First']);
-      $Persoonsnummer_First = str_pad($Persoonsnummer_First, 5, '0', STR_PAD_LEFT);
       $pathvar[] = str_replace(' ', '-', $Persoonsnummer_First);
     }else {
       //$pathvar[] = ts('no-per-first');
-      $pathvar[] = '00000';
+      $pathvar[] = 'none';
     }
     
     // VGE_adres_First 255 varchar
