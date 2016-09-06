@@ -55,12 +55,26 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
   $return['message'][] = ts('Directory created, with pathname \'%s\'.' . $pathname);
   echo ts('Directory created, with pathname \'%s\'.' . $pathname) . '<br/>' . PHP_EOL;
     
+  // counting
+  $query_count = "SELECT COUNT(*) AS `count` FROM civicrm_case
+    LEFT JOIN civicrm_case_contact ON civicrm_case_contact.case_id = civicrm_case.id
+    LEFT JOIN civicrm_contact ON civicrm_contact.id = civicrm_case_contact.contact_id
+    WHERE civicrm_case.is_deleted = '0' AND civicrm_contact.is_deleted = '0'";
+  
+  if($dao_count = CRM_Core_DAO::executeQuery($query_count)){
+    $dao_count->fetch();
+    $return['message'][] = ts('\'%1\' cases retrieved.', array(1 => $dao_count->count));
+    echo ts('\'%1\' cases retrieved.', array(1 => $dao_count->count)) . '<br/>' . PHP_EOL;
+
+  
   $query = "SELECT * FROM civicrm_case
     LEFT JOIN civicrm_case_contact ON civicrm_case_contact.case_id = civicrm_case.id
     LEFT JOIN civicrm_contact ON civicrm_contact.id = civicrm_case_contact.contact_id
     WHERE civicrm_case.is_deleted = '0' AND civicrm_contact.is_deleted = '0'
   ";
   
+  $query_count = "SELECT COUNT(civicrm_case.id) as count"
+    
   if(!$dao = CRM_Core_DAO::executeQuery($query)){
     $return['is_error'] = true;
     $return['error_message'] = sprintf('Failed execute query (%s) !', $query);
@@ -237,7 +251,6 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
   
   if($debug){
     CRM_Utils_System::civiExit();
-    exit();
   }
   
   return civicrm_api3_create_success($return);
