@@ -276,7 +276,9 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     $count++;
   }
   
+  $return['message'][] = ts('Scheduled job Finished !');
   if($debug){
+    echo ts('Scheduled job Finished !');
     CRM_Utils_System::civiExit();
   }
   
