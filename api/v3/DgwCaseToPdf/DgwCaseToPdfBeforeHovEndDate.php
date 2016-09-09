@@ -101,6 +101,14 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       return civicrm_api3_create_success($return);
     }
     
+    if('755' == $dao->case_id or '832' == $dao->case_id or '888' == $dao->case_id or '1444' == $dao->case_id or '1455' == $dao->case_id){
+      $return['message'][] = ts('Case with the id \'%1\' is skipped !', array(1 => $dao->case_id));
+      if($debug){
+        echo ts('Case with the id \'%1\' is skipped !', array(1 => $dao->case_id)) . '<br/>' . PHP_EOL;
+      }
+      continue;
+    }
+    
     $return['message'][] = ts('Start witth case \'%1\' with contact id \'%2\'.', array(1 => $dao->case_id, 2 => $dao->contact_id));
     if($debug){
       echo ts('Start witth case \'%1\' with contact id \'%2\'.', array(1 => $dao->case_id, 2 => $dao->contact_id)) . '<br/>' . PHP_EOL;
@@ -197,8 +205,11 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     if(CRM_Casetopdf_Config::file_exists($filename)){
       continue;
     }
+    if(CRM_Casetopdf_Config::file_exists($pathname . implode('_', $pathvar) . '_to_big.txt')){
+      continue;
+    }
     
-    $htmlcasereport  = new CRM_Dgwcasetopdf_Case_XMLProcessor_Report();
+    $htmlcasereport = new CRM_Dgwcasetopdf_Case_XMLProcessor_Report();
     $html = '';
     $html = $htmlcasereport->htmlCaseReport($dao->case_id, $dao->contact_id);
     if(isset($html['is_error']) and $html['is_error']){
@@ -214,10 +225,20 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     }
     
     if(82710 <= strlen($html)){
-      $return['message'][] = ts('Html is to big  to convert to pdf, filename \'%1\'', array(1 => $filename));
+      // created file to big so we can skip it easily the next time
+      $_return = CRM_Casetopdf_Config::fwrite($pathname . implode('_', $pathvar) . '_to_big.txt', 'Html is to big to convert to pdf !', 'w');
+      if($_return['is_error']){
+        $return['message'][] = $_return['error_message'];
+        if($debug){
+          echo $_return['error_message'] . '<br/>' . PHP_EOL;
+        }
+      }
+      
+      $return['message'][] = ts('Html is to big to convert to pdf, filename \'%1\'', array(1 => $filename));
       if($debug){
         echo ts('Html is to big  to convert to pdf, filename \'%1\'', array(1 => $filename)) . '<br/>' . PHP_EOL;
       }
+      
       continue;
     }   
     
