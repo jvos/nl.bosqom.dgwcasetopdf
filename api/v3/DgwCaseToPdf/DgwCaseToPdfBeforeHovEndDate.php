@@ -101,7 +101,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       return civicrm_api3_create_success($return);
     }
     
-    if('755' == $dao->case_id or '832' == $dao->case_id or '888' == $dao->case_id or '1444' == $dao->case_id or '1455' == $dao->case_id){
+    if('755' == $dao->case_id or '832' == $dao->case_id or '888' == $dao->case_id or '1444' == $dao->case_id or '1455' == $dao->case_id or '2695' == $dao->case_id){
       $return['message'][] = ts('Case with the id \'%1\' is skipped !', array(1 => $dao->case_id));
       if($debug){
         echo ts('Case with the id \'%1\' is skipped !', array(1 => $dao->case_id)) . '<br/>' . PHP_EOL;
