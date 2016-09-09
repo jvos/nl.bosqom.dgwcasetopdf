@@ -203,9 +203,17 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
     $filename = $pathname . implode('_', $pathvar) . '.pdf';
         
     if(CRM_Casetopdf_Config::file_exists($filename)){
+      $return['message'][] = ts('File \'%1\' already exist !', array(1 => $filename));
+      if($debug){
+        echo ts('File \'%1\' already exist !', array(1 => $filename)) . '<br/>' . PHP_EOL;
+      }
       continue;
     }
     if(CRM_Casetopdf_Config::file_exists($pathname . implode('_', $pathvar) . '_to_big.txt')){
+      $return['message'][] = ts('File \'%1\' already exist, was to big !', array(1 => $pathname . implode('_', $pathvar) . '_to_big.txt'));
+      if($debug){
+        echo ts('File \'%1\' already exist, was to big !', array(1 => $pathname . implode('_', $pathvar) . '_to_big.txt')) . '<br/>' . PHP_EOL;
+      }
       continue;
     }
     
