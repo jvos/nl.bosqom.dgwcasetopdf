@@ -110,7 +110,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       continue;
     }
     
-    if('230' == $dao->case_id){
+    if('230' == $dao->case_id or '231' == $dao->case_id){
       $return['message'][] = ts('Case with the id \'%1\' is too big, it is skipped !', array(1 => $dao->case_id));
       if($debug){
         echo ts('Case with the id \'%1\' is too big, it is skipped !', array(1 => $dao->case_id)) . '<br/>' . PHP_EOL;
