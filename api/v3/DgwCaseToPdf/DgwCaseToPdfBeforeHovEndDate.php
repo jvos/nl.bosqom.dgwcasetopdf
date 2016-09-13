@@ -25,6 +25,7 @@ function _civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate_spec(&$spec)
 function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
   $debug = CRM_Utils_Array::value('debug', $params, false);
   $limit = CRM_Utils_Array::value('limit', $params, '0');
+  $big = CRM_Utils_Array::value('big', $params, true);
     
   $return['is_error'] = false;
   $return['message'] = [];
@@ -169,7 +170,6 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       $VGE_nummer_First = str_replace(' ', '-', $hov['VGE_nummer_First']);
       $pathvar[] = str_replace(' ', '-', $VGE_nummer_First);
     }else {
-      //$pathvar[] = ts('no-vge-nr-first');
       $pathvar[] = 'none';
     }
     
@@ -179,7 +179,6 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       $Persoonsnummer_First = str_replace(' ', '-', $per['Persoonsnummer_First']);
       $pathvar[] = str_replace(' ', '-', $Persoonsnummer_First);
     }else {
-      //$pathvar[] = ts('no-per-first');
       $pathvar[] = 'none';
     }
     
@@ -232,7 +231,7 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       CRM_Casetopdf_Config::flush();
     }
     
-    if(82710 <= strlen($html)){
+    if($big and 82710 <= strlen($html)){
       // created file to big so we can skip it easily the next time
       $_return = CRM_Casetopdf_Config::fwrite($pathname . implode('_', $pathvar) . '_to_big.txt', 'Html is to big to convert to pdf !', 'w');
       if($_return['is_error']){
