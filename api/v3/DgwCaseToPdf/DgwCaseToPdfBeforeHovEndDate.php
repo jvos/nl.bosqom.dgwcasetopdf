@@ -110,6 +110,14 @@ function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
       continue;
     }
     
+    if('230' == $dao->case_id){
+      $return['message'][] = ts('Case with the id \'%1\' is too big, it is skipped !', array(1 => $dao->case_id));
+      if($debug){
+        echo ts('Case with the id \'%1\' is too big, it is skipped !', array(1 => $dao->case_id)) . '<br/>' . PHP_EOL;
+      }
+      continue;
+    }
+    
     $return['message'][] = ts('Start witth case \'%1\' with contact id \'%2\'.', array(1 => $dao->case_id, 2 => $dao->contact_id));
     if($debug){
       echo ts('Start witth case \'%1\' with contact id \'%2\'.', array(1 => $dao->case_id, 2 => $dao->contact_id)) . '<br/>' . PHP_EOL;
