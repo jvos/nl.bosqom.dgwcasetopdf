@@ -25,7 +25,7 @@ function _civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate_spec(&$spec)
 function civicrm_api3_dgw_case_to_pdf_dgwcasetopdfbeforehovenddate($params) {
   $debug = CRM_Utils_Array::value('debug', $params, false);
   $limit = CRM_Utils_Array::value('limit', $params, '0');
-  $big = CRM_Utils_Array::value('big', $params, true);
+  $big = CRM_Utils_Array::value('big', $params, false);
     
   $return['is_error'] = false;
   $return['message'] = [];
